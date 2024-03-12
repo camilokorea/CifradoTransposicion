@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cifrado de Rejilla</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        h2,
+        h3 {
+            text-align: center;
+        }
+
+        label,
+        textarea,
+        input,
+        button {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+
+        .rejilla {
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            margin-bottom: 20px;
+        }
+
+        .rejilla div {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Cifrado de Rejilla</h2>
+
+    <label for="mensaje">Mensaje Original:</label>
+    <textarea id="mensaje" placeholder="Ingresa tu mensaje..."></textarea>
+
+    <label for="clave">Clave:</label>
+    <input type="number" id="clave" placeholder="Ingresa la clave..." />
+
+    <button onclick="cifrar()">Cifrar</button>
+
+    <div class="rejilla" id="rejilla"></div>
+
+    <h3>Mensaje Cifrado:</h3>
+    <p id="mensajeCifrado"></p>
+
+    <script>
+        function cifradoDeRejilla(mensaje, clave) {
+            const cuadricula = [];
+
+            for (let i = 0; i < clave; i++) {
+                cuadricula[i] = [];
+                for (let j = 0; j < mensaje.length; j++) {
+                    cuadricula[i][j] = ' ';
+                }
+            }
+
+            let fila = 0;
+            let columna = 0;
+            for (let i = 0; i < mensaje.length; i++) {
+                cuadricula[fila][columna] = mensaje[i];
+                fila++;
+                if (fila === clave) {
+                    fila = 0;
+                    columna++;
+                }
+            }
+
+            // Visualizar la cuadrícula en la interfaz
+            const rejillaElement = document.getElementById('rejilla');
+            rejillaElement.innerHTML = '';
+            for (let i = 0; i < clave; i++) {
+                for (let j = 0; j < mensaje.length; j++) {
+                    const div = document.createElement('div');
+                    div.innerText = cuadricula[i][j];
+                    rejillaElement.appendChild(div);
+                }
+            }
+
+            let mensajeCifrado = '';
+            for (let i = 0; i < clave; i++) {
+                for (let j = 0; j < mensaje.length; j++) {
+                    if (cuadricula[i][j] !== ' ') {
+                        mensajeCifrado += cuadricula[i][j];
+                    }
+                }
+            }
+
+            return mensajeCifrado;
+        }
+
+        function cifrar() {
+            const mensajeOriginal = document.getElementById('mensaje').value;
+            const clave = parseInt(document.getElementById('clave').value, 10);
+
+            if (mensajeOriginal && !isNaN(clave) && clave > 0) {
+                const mensajeCifrado = cifradoDeRejilla(mensajeOriginal, clave);
+                document.getElementById('mensajeCifrado').innerText = mensajeCifrado;
+            } else {
+                alert('Por favor, ingresa un mensaje y una clave válida.');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cifrado de la Ruta del Caracol</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        h2,
+        h3 {
+            text-align: center;
+        }
+
+        label,
+        textarea,
+        input,
+        button {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+
+        .rejilla {
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            margin-bottom: 20px;
+        }
+
+        .rejilla div {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Cifrado de la Ruta del Caracol</h2>
+
+    <label for="mensaje">Mensaje Original:</label>
+    <textarea id="mensaje" placeholder="Ingresa tu mensaje..."></textarea>
+
+    <label for="dimension">Dimensión:</label>
+    <input type="number" id="dimension" placeholder="Ingresa la dimensión..." />
+
+    <button onclick="cifrarRutaCaracol()">Cifrar</button>
+
+    <div class="rejilla" id="rejillaRutaCaracol"></div>
+
+    <h3>Mensaje Cifrado:</h3>
+    <p id="mensajeCifradoRutaCaracol"></p>
+
+    <script>
+        function cifradoRutaCaracol(mensaje, dimension) {
+            const cuadricula = [];
+
+            for (let i = 0; i < dimension; i++) {
+                cuadricula[i] = [];
+                for (let j = 0; j < dimension; j++) {
+                    cuadricula[i][j] = ' ';
+                }
+            }
+
+            let valor = 0;
+            for (let capa = 0; capa < Math.ceil(dimension / 2); capa++) {
+                // Superior
+                for (let i = capa; i < dimension - capa; i++) {
+                    cuadricula[capa][i] = mensaje[valor++];
+                }
+                // Derecha
+                for (let i = capa + 1; i < dimension - capa; i++) {
+                    cuadricula[i][dimension - 1 - capa] = mensaje[valor++];
+                }
+                // Inferior
+                for (let i = dimension - 2 - capa; i >= capa; i--) {
+                    cuadricula[dimension - 1 - capa][i] = mensaje[valor++];
+                }
+                // Izquierda
+                for (let i = dimension - 2 - capa; i > capa; i--) {
+                    cuadricula[i][capa] = mensaje[valor++];
+                }
+            }
+
+            // Visualizar la cuadrícula en la interfaz
+            const rejillaElement = document.getElementById('rejillaRutaCaracol');
+            rejillaElement.innerHTML = '';
+            for (let i = 0; i < dimension; i++) {
+                for (let j = 0; j < dimension; j++) {
+                    const div = document.createElement('div');
+                    div.innerText = cuadricula[i][j];
+                    rejillaElement.appendChild(div);
+                }
+            }
+
+            let mensajeCifrado = '';
+            for (let i = 0; i < dimension; i++) {
+                for (let j = 0; j < dimension; j++) {
+                    if (cuadricula[i][j] !== ' ') {
+                        mensajeCifrado += cuadricula[i][j];
+                    }
+                }
+            }
+
+            return mensajeCifrado;
+        }
+
+        function cifrarRutaCaracol() {
+            const mensajeOriginal = document.getElementById('mensaje').value;
+            const dimension = parseInt(document.getElementById('dimension').value, 10);
+
+            if (mensajeOriginal && !isNaN(dimension) && dimension > 0) {
+                const mensajeCifrado = cifradoRutaCaracol(mensajeOriginal, dimension);
+                document.getElementById('mensajeCifradoRutaCaracol').innerText = mensajeCifrado;
+            } else {
+                alert('Por favor, ingresa un mensaje y una dimensión válidos.');
+            }
+        }
+    </script>
+
+</body>
+
+</html>
